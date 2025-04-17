@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+  <head>
+    <title>{{title}}</title>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static', filename='simple.css')}}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h3>{{title}}</h3>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/nodes">Node Status</a>
+        <a href="/controller">Manual Control</a>
+        <a href="/shutdown">Shutdown</a>
+      </nav>
+    </header>
+    <main>
+      {% block body %}
+      {% endblock %}
+    </main>
+    <footer>
+      <p>{{title}} framework. &#169; 2025 <a href="https://www.lowrieweb.com" target="_blank">Lowrie Digital Limited</a>, All rights reserved.</p>
+    </footer>
+  </body>
+</html>

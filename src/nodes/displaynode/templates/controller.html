@@ -1,0 +1,117 @@
+{% extends 'index.html' %}
+{% block body %}
+  <input id="mode" name="mode" type="hidden" value="{{mode}}" />
+  <h2>Manual Control:</h2>
+  <label class="switch">
+    <input id="mode-switch" class="switch-input" type="checkbox"/>
+    <span class="switch-label" data-on="On" data-off="Off"></span> 
+    <span class="switch-handle"></span> 
+  </label>
+  <hr/>
+  <div id="controls" style="display: none">
+    <div class="videofeed">
+      <img src="{{ url_for('video_feed') }}">
+    </div>
+    <br/>
+    <div class="controllers">
+      <div>
+        <h5>Drive Controls</h5>
+        <div class="dpad">
+          <div class="dpad-inner">
+            <button><div class="north-west action"></div></button>
+            <button><div class="north action"></div></button>
+            <button><div class="north-east action"></div></button>
+            <button><div class="west action"></div></button>
+            <button class="hidden"></button>
+            <button><div class="east action"></div></button>
+            <button><div class="south-west action"></div></button>
+            <button><div class="south action"></div></button>
+            <button><div class="south-east action"></div></button>
+          </div>
+        </div>
+        <div class="rpad">
+          <button class="turn-left action">&#10226</button>
+          <button class="turn-right action">&#10227</button>
+        </div>
+      </div>
+      <div>
+        <h5>Camera Controls</h5>
+        <div class="dpad">
+          <div class="dpad-inner">
+            <button class="hidden"></button>
+            <button><div class="up action"></div></button>
+            <button class="hidden"></button>
+            <button><div class="left action"></div></button>
+            <button class="hidden"></button>
+            <button><div class="right action"></div></button>
+            <button class="hidden"></button>
+            <button><div class="down action"></div></button>
+            <button class="hidden"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    $(document).ready(function(){
+
+    const showHideControls = (show) => {
+      if (show)
+        $("#controls").show();
+      else
+        $("#controls").hide();
+    }
+
+    mode = parseInt($("#mode").val());
+    $("#mode-switch").prop("checked", mode);
+    showHideControls(mode)
+
+    $("#mode-switch").change(() => {
+      mode = $("#mode-switch").is(":checked") ? 1 : 0
+
+      $("#mode").val(mode);
+      
+      $.ajax({ 
+        url: '/toggle-manual-mode', 
+        type: 'POST', 
+        data: {"mode": mode},
+        dataType: 'json',
+        success: function(response){ showHideControls(mode); } 
+      }); 
+    });
+
+    direction = '';
+    
+    const handleDown = (e) => {
+      e.preventDefault();
+      window.addEventListener('mouseup', handleUp, {once: true});
+      window.addEventListener('mouseout', handleUp, {once: true});
+
+      if (parseInt($("#mode").val()) == 1) {
+        direction = $(e.target).attr('class').split(' ').filter((classname) => { return classname != 'action'})[0]
+      }
+    };
+
+    const handleUp = (e) => {
+      direction = ''
+    };
+
+    const loop = () => {
+      requestAnimationFrame(loop);
+
+      if (direction != '') {
+
+        $.ajax({ 
+          url: '/drive-update', 
+          type: 'POST', 
+          data: {"drive": direction},
+          dataType: 'json'
+        });
+      } 
+    };
+
+    $(".action").on('mousedown', handleDown);
+    loop();
+  });
+</script>
+{% endblock %}

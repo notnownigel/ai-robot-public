@@ -1,0 +1,50 @@
+{% extends 'index.html' %}
+{% block body %}
+  <img src="{{ url_for('video_feed') }}">
+  <hr/>
+  <table>
+    <thead>
+      <tr>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="fps"></td>
+      </tr>
+      <tr>
+        <td id="mode"></td>
+      </tr>
+      <tr>
+        <td><span id="status_cpu_load"></span>, <span id="status_cpu_temp"></span></td>
+      </tr>
+      <tr>
+        <td id="status_disk_usage"></td>
+      </tr>
+      <tr>
+        <td id="status_memory_usage"></td>
+      </tr>
+      <tr>
+        <td id="status_battery_percentage"></td>
+      </tr>
+    </tbody>
+  </table>
+  <script>
+    const fetchStatus = () => $.ajax({
+      type: "GET",
+      url: '/status',
+      success: function (data) {
+        $("#fps").text("Frame Rate: " + data.fps.toFixed(2) + " FPS")
+        $("#mode").text("Mode: " + data.mode)
+        $("#status_cpu_load").text("CPU Load: " + data.cpu_load + "%")
+        $("#status_cpu_temp").text("CPU Temp: " + data.cpu_temp + "\u00B0C")
+        $("#status_disk_usage").text("Disk Usage: " + data.disk_space_used + " / " + data.disk_space_total + "Mb")
+        $("#status_memory_usage").text("Memory Usage: " + data.memory_used + " / " + data.memory_total + "Mb")
+        $("#status_battery_percentage").text("UPS Battey Percentage: " + data.battery_percent + "%")
+        setTimeout(fetchStatus, 1000);
+      }
+    });
+
+    fetchStatus();
+  </script>
+{% endblock %}

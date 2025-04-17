@@ -1,0 +1,17 @@
+{% extends 'index.html' %}
+{% block body %}
+  <h4>Node Status:</h4>
+  <table>
+    <thead>
+      <tr>
+        <th>Node</th>
+        <th>Running?</th>
+        <th>Last Message</th>
+        <th>Last Error</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{tbody}}
+    </tbody>
+  </table>
+{% endblock %}
