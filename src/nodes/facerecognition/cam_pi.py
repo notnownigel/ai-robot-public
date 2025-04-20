@@ -10,6 +10,7 @@ class CamPi(CamBase):
         self.logger.info("Picamera Camera Init")
         self.cam = Picamera2()
         self.cam.configure(self.cam.create_preview_configuration({'format': 'RGB888'}))
+        self.save_resolution(self.cam.preview_configuration.size[0],self.cam.preview_configuration.size[1])
         self.cam.start()
         self.stopped = False
 

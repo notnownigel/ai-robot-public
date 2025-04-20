@@ -1,6 +1,6 @@
 import numpy as np
 import logging
-from core import helpers
+from core import helpers, Shared
 
 
 class CamBase:
@@ -19,3 +19,7 @@ class CamBase:
   
     def get_frame(self) -> np.ndarray:
         pass
+
+    def save_resolution(self, width, height):
+        Shared.screen_width = width
+        Shared.screen_height = height

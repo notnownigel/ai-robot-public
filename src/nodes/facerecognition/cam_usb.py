@@ -8,6 +8,7 @@ class CamUsb(CamBase):
  
     def start(self) -> None:
         self.cam = cv2.VideoCapture(0)
+        self.save_resolution(self.cam.get(3), self.cam.get(4))
 
         self.logger.info("USB Camera Init")
 

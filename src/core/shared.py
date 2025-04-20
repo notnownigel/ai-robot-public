@@ -14,7 +14,7 @@ class Shared(object):
     SERVO_MIN_X = 0
     SERVO_MIN_Y = 0
     SERVO_MAX_X = 180
-    SERVO_MAX_Y = 80
+    SERVO_MAX_Y = 120
     SERVO_CENTER_X = 90
     SERVO_CENTER_Y = 20
 
@@ -22,6 +22,10 @@ class Shared(object):
     servo_x = 0
     servo_y = 0
     
+    # Screen Dimentions
+    screen_width = 640
+    screen_height = 480
+
     # Flags
     manual_mode = False
 

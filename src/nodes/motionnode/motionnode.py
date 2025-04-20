@@ -22,16 +22,28 @@ class MotionNode(Node):
         self.node_event_channel.publish("servo-command", CameraCommand(action=CameraCommand.CAMERA_STOP))
 
     def centre_thing(self,  thing: Thing):
+        # To Centre:
+        #   y -> use camera 
+        #   x -> use rotation then camera 
+        
+        xoffset = thing.offset[0]
+        yoffset = thing.offset[1]
+        yratio = ((Shared.screen_height/2)-yoffset) / Shared.screen_height
+
+        if yratio < 0.5:
+            self.node_event_channel.publish("servo-command", CameraCommand(action=CameraCommand.CAMERA_ABSOLUTE, pos=(Shared.servo_x, Shared.servo_y-2)))
+        if yratio > 0.6:
+            self.node_event_channel.publish("servo-command", CameraCommand(action=CameraCommand.CAMERA_ABSOLUTE, pos=(Shared.servo_x, Shared.servo_y+2)))
         pass
 
     def looking_around_sequence(self) -> List:
         return [
-            CameraCommand(action=CameraCommand.CAMERA_GOTO, end_pos=(Shared.SERVO_MIN_X, Shared.SERVO_MAX_Y), steps=40, duration=4),
+            CameraCommand(action=CameraCommand.CAMERA_GOTO, pos=(Shared.SERVO_MIN_X, Shared.SERVO_MAX_Y), steps=40, duration=4),
             CameraCommand(action=CameraCommand.CAMERA_CENTER, steps=40, duration=4),
-            CameraCommand(action=CameraCommand.CAMERA_GOTO, end_pos=(Shared.SERVO_MAX_X, Shared.SERVO_MAX_Y), steps=40, duration=4),
+            CameraCommand(action=CameraCommand.CAMERA_GOTO, pos=(Shared.SERVO_MAX_X, Shared.SERVO_MAX_Y), steps=40, duration=4),
             CameraCommand(action=CameraCommand.CAMERA_CENTER, steps=40, duration=4),
-            CameraCommand(action=CameraCommand.CAMERA_GOTO, end_pos=(Shared.SERVO_MIN_X, Shared.SERVO_MIN_Y), steps=40, duration=4),
+            CameraCommand(action=CameraCommand.CAMERA_GOTO, pos=(Shared.SERVO_MIN_X, Shared.SERVO_MIN_Y), steps=40, duration=4),
             CameraCommand(action=CameraCommand.CAMERA_CENTER, steps=40, duration=4),
-            CameraCommand(action=CameraCommand.CAMERA_GOTO, end_pos=(Shared.SERVO_MAX_X, Shared.SERVO_MIN_Y), steps=40, duration=4),
+            CameraCommand(action=CameraCommand.CAMERA_GOTO, pos=(Shared.SERVO_MAX_X, Shared.SERVO_MIN_Y), steps=40, duration=4),
             CameraCommand(action=CameraCommand.CAMERA_CENTER, steps=40, duration=4)
         ]

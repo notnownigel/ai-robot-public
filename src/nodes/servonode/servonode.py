@@ -39,9 +39,11 @@ class ServoNode(I2CNode):
             case CameraCommand.CAMERA_CENTER:
                 self.moveTo(Shared.SERVO_CENTER_X, Shared.SERVO_CENTER_Y, command.steps, command.duration)
             case CameraCommand.CAMERA_GOTO:
-                self.moveTo(command.end_pos[0], command.end_pos[1], command.steps, command.duration)
+                self.moveTo(command.pos[0], command.pos[1], command.steps, command.duration)
             case CameraCommand.CAMERA_RELATIVE:
-                self.position(Shared.servo_x+command.relative[0], Shared.servo_y+command.relative[1])
+                self.position(Shared.servo_x+command.pos[0], Shared.servo_y+command.pos[1])
+            case CameraCommand.CAMERA_ABSOLUTE:
+                self.direct(command.pos[0], command.pos[1])
             case CameraCommand.CAMERA_STOP:
                 if Shared.manual_mode is False:
                     self.stop_now = True
@@ -60,13 +62,16 @@ class ServoNode(I2CNode):
 
     def position(self, x: int, y: int):
         if self.stop_now is False:
-            if x >= Shared.SERVO_MIN_X and x <= Shared.SERVO_MAX_X: 
-                self.write_array(I2CNode.RASPBOT_SERVO, [0x01, int(x)])
-                Shared.servo_x = x
+            self.direct(x, y)
+
+    def direct(self, x: int, y: int):
+        if x >= Shared.SERVO_MIN_X and x <= Shared.SERVO_MAX_X: 
+            self.write_array(I2CNode.RASPBOT_SERVO, [0x01, int(x)])
+            Shared.servo_x = x
                 
-            if y >= Shared.SERVO_MIN_Y and y <= Shared.SERVO_MAX_Y: 
-                self.write_array(I2CNode.RASPBOT_SERVO, [0x02, int(y)])
-                Shared.servo_y = y
+        if y >= Shared.SERVO_MIN_Y and y <= Shared.SERVO_MAX_Y: 
+            self.write_array(I2CNode.RASPBOT_SERVO, [0x02, int(y)])
+            Shared.servo_y = y
 
     def execute_sequence(self, sequence: List):
         self.sequence = sequence

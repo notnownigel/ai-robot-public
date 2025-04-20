@@ -5,7 +5,7 @@ from .camerastream import CameraStream
 from .hailoface import FaceAI
 from .schemas import FaceRecognitionSchema
 from .facestorage import FactoryStorage
-from core import Person, helpers
+from core import Person, helpers, Shared
 
 class FaceRecognition(Node):
     def __init__(self, dbpath):
@@ -47,13 +47,17 @@ class FaceRecognition(Node):
                 if name != "":
                     x1, y1, x2, y2 = map(int, face["bbox"])  # Convert bbox coordinates to integers
                     frame = helpers.overlay_label(frame, name, (x1, y1), (255,255,255), (255,0,0))
-                    # concert bbox to rectangle relative to frame center
-                    height, width = frame.shape[:2]
+
+                    # convert bbox to rectangle relative to frame center
+                    xoffset = Shared.screen_width-x2-((x2-x1)/2)
+                    yoffset = y1-(Shared.screen_height/2)+((y2-y1)/2)
+                    bbox=(x1, y1, x2, y2)
+                    offset=(int(xoffset), int(yoffset))
 
                     # get person score
                     person_score = os.getenv(f"PERSON_SCORE_{name.upper()}")
                     person_score = 5 if person_score is None else person_score
-                    self.node_event_channel.publish("person-detected", Person(name=name, match_score=float(face["score"]), bbox=(x1, y1, x2, y2), offset=(int(x2-x1-(width/2)), int(y2-y1-(height/2))), person_score=person_score))
+                    self.node_event_channel.publish("person-detected", Person(name=name, match_score=float(face["score"]), bbox=bbox, offset=offset, person_score=person_score))
 
             self.node_event_channel.publish("display-node-frame", frame)
         

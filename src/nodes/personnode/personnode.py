@@ -40,6 +40,7 @@ class PersonNode(Node):
     def detected(self, person: Person):
         self.lonely_event.set()
         self.filter.add(person.name, person)
+        self.node_event_channel.publish("centre-thing", person)
 
     def get_person_greeting(self, person: Person):
         # TODO - This should come from LLM
@@ -55,6 +56,5 @@ class PersonNode(Node):
     def newperson(self, person: Person):
         self.info(f"New Person: {person.name}")        
         self.node_event_channel.publish("speech-node-speak", self.get_person_greeting(person))
-        self.node_event_channel.publish("centre-thing", person)
         
 

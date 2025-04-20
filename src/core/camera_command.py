@@ -7,10 +7,10 @@ class CameraCommand(object):
     CAMERA_CENTER=1
     CAMERA_GOTO=2
     CAMERA_RELATIVE=3
-    
+    CAMERA_ABSOLUTE=4
+
     action: int
-    end_pos: tuple = (0,0)
-    relative: tuple = (0,0)
+    pos: tuple = (0,0)
     steps: int = 1
     duration: int = 1
 
