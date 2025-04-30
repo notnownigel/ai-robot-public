@@ -2,14 +2,13 @@ import logging
 import numpy as np
 from pathlib import Path
 from typing import List, Any
-from core import Storage, helpers
-from .schemas import FaceRecognitionSchema
+from core import Storage, helpers, FaceRecognitionSchema
 
 top_k = 1
 field_name = "vector"
 metric_type = "cosine"
 
-class FactoryStorage(Storage):
+class FaceStorage(Storage):
 
     def __init__(self, uri, table, schema):
         super().__init__(uri, table, schema)

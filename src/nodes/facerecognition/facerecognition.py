@@ -4,7 +4,7 @@ from core.node import Node
 from .camerastream import CameraStream 
 from .hailoface import FaceAI
 from .schemas import FaceRecognitionSchema
-from .facestorage import FactoryStorage
+from .facestorage import FaceStorage
 from core import Person, helpers, Shared
 
 class FaceRecognition(Node):
@@ -23,7 +23,7 @@ class FaceRecognition(Node):
         super().start()
         self.camera = CameraStream("camera")
         self.camera.start()
-        self.db = FactoryStorage(self.dbpath, "faces", FaceRecognitionSchema)
+        self.db = FaceStorage(self.dbpath, "faces", FaceRecognitionSchema)
         self.ai = FaceAI()
         Thread(target=self.run, daemon=True).start()
         

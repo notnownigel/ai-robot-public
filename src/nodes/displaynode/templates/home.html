@@ -40,7 +40,7 @@
         $("#status_cpu_temp").text("CPU Temp: " + data.cpu_temp + "\u00B0C")
         $("#status_disk_usage").text("Disk Usage: " + data.disk_space_used + " / " + data.disk_space_total + "Mb")
         $("#status_memory_usage").text("Memory Usage: " + data.memory_used + " / " + data.memory_total + "Mb")
-        $("#status_battery_percentage").text("UPS Battey Percentage: " + data.battery_percent + "%")
+        $("#status_battery_percentage").text("Available UPS Battery: " + data.battery_percent + "%")
         setTimeout(fetchStatus, 1000);
       }
     });

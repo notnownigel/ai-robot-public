@@ -15,17 +15,6 @@ class FaceAI:
         # Face recognition model
         self.face_rec_model =  self.zoo.load_model("arcface_mobilefacenet--112x112_quant_hailort_hailo8_1") 
 
-        #self.model = degirum_tools.CroppingAndClassifyingCompoundModel(self.face_det_model, self.face_rec_model, 112.0)
-
-
-    def get_faces_from_inference_result(self, result) -> list:
-        images = []
-        for face in result.results:
-            x1, y1, x2, y2 = map(int, face["bbox"])
-            face_img = result.image[y1:y2, x1:x2]
-            images.append(face_img)
-        return images
-       
     def get_aligned_faces_from_inference_result(self, result) -> list:
 
         images = []

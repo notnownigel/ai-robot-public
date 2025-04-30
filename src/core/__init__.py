@@ -8,3 +8,4 @@ from .filters import TimeSeriesFilter, MultiTimeSeriesFilter
 from .system_status import SystemStatus
 from .things import Thing, Person
 from .camera_command import CameraCommand
+from .schemas import FaceRecognitionSchema

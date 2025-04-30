@@ -13,7 +13,7 @@ Ubermensch(
     PersonNode(),
     SpeechNode(),
     MotionNode(),
-    #OledNode(),
+    OledNode(),
     ServoNode(),
     MotorNode(),
     BuzzerNode(),
