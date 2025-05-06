@@ -25,8 +25,8 @@ class MotorNode(I2CNode):
         self.node_event_channel.subscribe("motor-translate-forward-right", self.translate_forward_right)
         self.node_event_channel.subscribe("motor-translate-back-left", self.translate_back_left)
         self.node_event_channel.subscribe("motor-translate-back-right", self.translate_back_right)
-        self.node_event_channel.subscribe("motor-rotate_left", self.rotate_left)
-        self.node_event_channel.subscribe("motor-rotate_right", self.rotate_right)
+        self.node_event_channel.subscribe("motor-rotate-left", self.rotate_left)
+        self.node_event_channel.subscribe("motor-rotate-right", self.rotate_right)
     
     def forwards(self, speed: int, duration: float):
         self.drive(MotorNode.WHEEL_LEFT_FRONT, MotorNode.DIRECTION_FORWARDS, speed)

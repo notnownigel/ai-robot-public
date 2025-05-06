@@ -27,14 +27,35 @@ class MotionNode(Node):
         #   x -> use rotation then camera 
         
         xoffset = thing.offset[0]
+        xratio = ((Shared.screen_width/2)-xoffset) / Shared.screen_width
         yoffset = thing.offset[1]
         yratio = ((Shared.screen_height/2)-yoffset) / Shared.screen_height
 
+        if xratio < 0.2:
+            self.node_event_channel.publish("motor-rotate-right", Shared.SPEED_SLOW, 0.1)
+            return
+
+        if xratio > 0.7:
+            self.node_event_channel.publish("motor-rotate-left", Shared.SPEED_SLOW, 0.1)
+            return
+
+        xPos = Shared.servo_x
+        yPos = Shared.servo_y
+
         if yratio < 0.5:
-            self.node_event_channel.publish("servo-command", CameraCommand(action=CameraCommand.CAMERA_ABSOLUTE, pos=(Shared.servo_x, Shared.servo_y-2)))
+            yPos = yPos - 2
+
         if yratio > 0.6:
-            self.node_event_channel.publish("servo-command", CameraCommand(action=CameraCommand.CAMERA_ABSOLUTE, pos=(Shared.servo_x, Shared.servo_y+2)))
-        pass
+            yPos = yPos + 2
+
+        if xratio < 0.4:
+            xPos = xPos - 2
+
+        if xratio > 0.5:
+            xPos = xPos + 2
+
+        if xPos != Shared.servo_x or yPos != Shared.servo_y:
+            self.node_event_channel.publish("servo-command", CameraCommand(action=CameraCommand.CAMERA_ABSOLUTE, pos=(xPos, yPos)))
 
     def looking_around_sequence(self) -> List:
         return [

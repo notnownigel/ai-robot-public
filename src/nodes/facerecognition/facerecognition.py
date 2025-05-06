@@ -3,9 +3,8 @@ from threading import Thread
 from core.node import Node
 from .camerastream import CameraStream 
 from .hailoface import FaceAI
-from .schemas import FaceRecognitionSchema
 from .facestorage import FaceStorage
-from core import Person, helpers, Shared
+from core import Person, helpers, Shared, FaceRecognitionSchema
 
 class FaceRecognition(Node):
     def __init__(self, dbpath):
@@ -49,7 +48,7 @@ class FaceRecognition(Node):
                     frame = helpers.overlay_label(frame, name, (x1, y1), (255,255,255), (255,0,0))
 
                     # convert bbox to rectangle relative to frame center
-                    xoffset = Shared.screen_width-x2-((x2-x1)/2)
+                    xoffset = x1-(Shared.screen_width/2)+((x2-x1)/2)
                     yoffset = y1-(Shared.screen_height/2)+((y2-y1)/2)
                     bbox=(x1, y1, x2, y2)
                     offset=(int(xoffset), int(yoffset))

@@ -94,9 +94,9 @@ def drive_update():
         case 'south-east':
             Node.node_event_channel.publish("motor-translate-back-right", Shared.SPEED_SLOW, 0.1)
         case 'turn-left':
-            Node.node_event_channel.publish("motor-rotate_left", Shared.SPEED_SLOW, 0.1)
+            Node.node_event_channel.publish("motor-rotate-left", Shared.SPEED_SLOW, 0.1)
         case 'turn-right':
-            Node.node_event_channel.publish("motor-rotate_right", Shared.SPEED_SLOW, 0.1)
+            Node.node_event_channel.publish("motor-rotate-right", Shared.SPEED_SLOW, 0.1)
         case 'up':
             Node.node_event_channel.publish("servo-command", CameraCommand(action=CameraCommand.CAMERA_RELATIVE, relative=(0, 2)))
         case 'down':
