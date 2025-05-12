@@ -1,22 +1,8 @@
     
 from datetime import timedelta, datetime
-from typing import Callable, Any
-from dataclasses import dataclass
- 
-@dataclass
-class FilterData:
-    key: str
-    data: object
+from typing import Callable
 
 class TimeSeriesFilter(object):
-    ''' Time Series Filter 
-    Looks for a running sequence of data over a gven timespan
-    If threshold is met, the filter calls the notification callback.
-    Once the time series is met, the data is ignored until ignorespan is reached.
-
-    Note: This implementation resets the time series if the data is different to the recorded data series
-    ''' 
-    
     def __init__(self, threshold: int, timespan: timedelta, ignorespan: timedelta, notification: Callable):
         self.threshold = threshold
         self.timespan = timespan
@@ -25,15 +11,13 @@ class TimeSeriesFilter(object):
         self.reset()
 
     def reset(self):
-        self.datas = []
+        self.data = None
+        self.key = None
+        self.count = 0
         self.start_time = datetime.now()
         self.start_ignore = None
 
     def add(self, key: str, data: object):
-        ''' Add data to filter
-        Triggers notification if time series criteria are met 
-        '''
-
         now = datetime.now()
 
         # First check if we are in ignore span
@@ -41,31 +25,26 @@ class TimeSeriesFilter(object):
             return
     
         # If empty data, start new datas
-        if len(self.datas) == 0:
+        if self.count == 0:
             self.reset()
 
-        filterData = FilterData(key, data)
-
+        if self.key is None:
+            self.key = key
+            
         # Check last data. If this is the same and within timespan, add to datas else reset
-        last_data = self.datas[0] if len(self.datas) > 0 else filterData
-
-        if now-self.start_time < self.timespan and last_data.key == filterData.key:
-            self.datas.append(filterData)
+        if now-self.start_time < self.timespan and self.key == key:
+            self.data = data
+            self.count += 1
         else:
             self.reset()
 
         # If threshold met, notify and start ignorespan
-        if len(self.datas) == self.threshold:
-            self.notification(self.datas[0].data)
+        if self.count == self.threshold:
+            self.notification(self.data)
             self.reset()
             self.start_ignore = datetime.now()
 
 class MultiTimeSeriesFilter(object):
-    ''' Multiple Object Time Series Filter 
-    Uses TimeSeriesFilter to implement time series logic for multiple objects. 
-    So if the filter sees a run of object1 it will fire for that object. 
-    If it sees another object it will pass this to another TimeSeriesFilter
-    ''' 
     def __init__(self, threshold: int, timespan: timedelta, ignorespan: timedelta, notification: Callable):
         self.filters = dict()
         self.threshold = threshold
@@ -74,10 +53,6 @@ class MultiTimeSeriesFilter(object):
         self.notification = notification
 
     def add(self, key: str, data: object):
-        ''' Add data to filter
-        Triggers notification if time series criteria are met 
-        '''
-
         if key not in self.filters:
             self.filters[key] = TimeSeriesFilter(threshold=self.threshold, timespan=self.timespan, ignorespan=self.ignorespan, notification=self.notification)
         
