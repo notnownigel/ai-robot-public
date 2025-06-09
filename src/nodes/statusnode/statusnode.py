@@ -10,38 +10,36 @@ class StatusNode(Node):
     
     def start(self): 
         super().start()
-        Thread(target=self.monitor_status, daemon=True).start()
         self.battery_percent = 100
         self.node_event_channel.subscribe("ups-battery-percent", self.update_battery)
+        self.run_every(10, self.monitor_status)
     
     def update_battery(self, percent:int):
         self.battery_percent = percent
 
     def monitor_status(self):
-        while self.running is True:
-            disk_used, disk_total = self.get_disk_usage()
-            memory_used, memory_total = self.get_memory_usage()
-            under_voltage = self.get_under_voltage_status()
+        disk_used, disk_total = self.get_disk_usage()
+        memory_used, memory_total = self.get_memory_usage()
+        under_voltage = self.get_under_voltage_status()
+        
+        if under_voltage:
+            #Immediate alert when under-voltage
+            self.error("Undervoltage detected")
+            self.node_event_channel.publish("under-voltage-detected")
             
-            if under_voltage:
-                #Immediate alert when under-voltage
-                self.error("Undervoltage detected")
-                self.node_event_channel.publish("under-voltage-detected")
-                
-            status = SystemStatus(
-                under_voltage = under_voltage,
-                ipaddr = self.get_ipaddr(),
-                disk_space_used = disk_used,
-                disk_space_total = disk_total,
-                memory_used = memory_used,
-                memory_total = memory_total,
-                cpu_temp = self.get_cpu_temp(),
-                cpu_load = self.get_cpu_load(),
-                battery_percent = self.battery_percent
-            )
-            
-            self.node_event_channel.publish("system-status", status)
-            time.sleep(10)
+        status = SystemStatus(
+            under_voltage = under_voltage,
+            ipaddr = self.get_ipaddr(),
+            disk_space_used = disk_used,
+            disk_space_total = disk_total,
+            memory_used = memory_used,
+            memory_total = memory_total,
+            cpu_temp = self.get_cpu_temp(),
+            cpu_load = self.get_cpu_load(),
+            battery_percent = self.battery_percent
+        )
+        
+        self.node_event_channel.publish("system-status", status)
 
     def get_ipaddr(self):
         cmd = "hostname -I | cut -d\' \' -f1"

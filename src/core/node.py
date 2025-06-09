@@ -25,7 +25,7 @@ class Node(object):
 
     def timer_run(self):
         while self.running:
-            self.run_every_trigger.wait(30)
+            self.run_every_trigger.wait(self.run_every_timeout)
             self.run_every_trigger.clear()
             self.run_every_callback()
 
