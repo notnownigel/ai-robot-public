@@ -15,7 +15,7 @@ class SpeechNode(Node):
         super().start()
         self.node_event_channel.subscribe("speech-node-speak", self.speak)
         pygame.init()
-        pygame.mixer.init
+        pygame.mixer.init()
         pygame.mixer.music.set_volume(1.0)
         self.speak_event = Event()
         Thread(target=self.run, daemon=True).start()

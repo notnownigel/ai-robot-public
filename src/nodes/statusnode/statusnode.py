@@ -1,6 +1,5 @@
-import os
+import subprocess
 import time
-from threading import Thread
 from core.node import Node
 from core import SystemStatus
 
@@ -18,73 +17,67 @@ class StatusNode(Node):
         self.battery_percent = percent
 
     def monitor_status(self):
+        under_voltage = self.get_under_voltage_status()
+        ipaddr = self.get_ipaddr()
         disk_used, disk_total = self.get_disk_usage()
         memory_used, memory_total = self.get_memory_usage()
-        under_voltage = self.get_under_voltage_status()
-        
+        cpu_temp = self.get_cpu_temp()
+        cpu_load = self.get_cpu_load()
+
         if under_voltage:
             #Immediate alert when under-voltage
             self.error("Undervoltage detected")
             self.node_event_channel.publish("under-voltage-detected")
-            
+        
         status = SystemStatus(
             under_voltage = under_voltage,
-            ipaddr = self.get_ipaddr(),
+            ipaddr = ipaddr,
             disk_space_used = disk_used,
             disk_space_total = disk_total,
             memory_used = memory_used,
             memory_total = memory_total,
-            cpu_temp = self.get_cpu_temp(),
-            cpu_load = self.get_cpu_load(),
+            cpu_temp = cpu_temp,
+            cpu_load = cpu_load,
             battery_percent = self.battery_percent
         )
-        
+    
         self.node_event_channel.publish("system-status", status)
-
+    
+    def get_under_voltage_status(self):
+        s = subprocess.getoutput('vcgencmd get_throttled').rstrip('\n')
+        return int(s.split("=")[1], 0) == 0x50005
+    
     def get_ipaddr(self):
-        cmd = "hostname -I | cut -d\' \' -f1"
-        s = os.popen(cmd).readline().rstrip('\n')
+        s = subprocess.getoutput("hostname -I | cut -d\' \' -f1").rstrip('\n')
         return f"IP: {s}"
     
     def get_disk_usage(self):
-        cmd = "df --total"
-        usage = os.popen(cmd).readlines().pop().split(' ')
+        usage = subprocess.getoutput("df --total").split('\n').pop().split(' ')
         values = [v for v in usage if v != '']
         return (int(int(values[2])/1024), int(int(values[1])/1024))
 
     def get_memory_usage(self):
-        cmd = "free -m"
-        usage = os.popen(cmd).readlines()[1].split(' ')
+        usage = subprocess.getoutput("free -m").split('\n')[1].split(' ')
         values = [v for v in usage if v != '']
         return (int(values[2]),int(values[1]))
    
     def get_cpu_temp(self):
-        s = os.popen('vcgencmd measure_temp').readline().rstrip("'C\n")
-        return float(s.split("=")[1])
+        s = subprocess.getoutput('vcgencmd measure_temp').split('=')
+        values = [v for v in s if v != '']
+        return float(values[1].rstrip("'C"))
 
-    def get_under_voltage_status(self):
-        s = os.popen('vcgencmd get_throttled').readline().rstrip('\n')
-        return int(s.split("=")[1], 0) == 0x50005
-    
+    def get_cpu_stats(self):
+        stat = subprocess.getoutput("cat /proc/stat").split('\n')[0].split(' ')
+        values = [v for v in stat if v != '']
+        del values[0]
+        total = sum(int(x) for x in values)
+        idle = int(values[3])
+        return (total, idle)
+
     def get_cpu_load(self):
-        f1 = os.popen("cat /proc/stat", 'r')
-        stat1 = f1.readline()
-        count = 10
-        data_1 = []
-        for i  in range (count):
-            data_1.append(int(stat1.split(' ')[i+2]))
-        total_1 = data_1[0]+data_1[1]+data_1[2]+data_1[3]+data_1[4]+data_1[5]+data_1[6]+data_1[7]+data_1[8]+data_1[9]
-        idle_1 = data_1[3]
-
+        (total_1, idle_1) = self.get_cpu_stats()
         time.sleep(1)
-
-        f2 = os.popen("cat /proc/stat", 'r')
-        stat2 = f2.readline()
-        data_2 = []
-        for i  in range (count):
-            data_2.append(int(stat2.split(' ')[i+2]))
-        total_2 = data_2[0]+data_2[1]+data_2[2]+data_2[3]+data_2[4]+data_2[5]+data_2[6]+data_2[7]+data_2[8]+data_2[9]
-        idle_2 = data_2[3]
+        (total_2, idle_2) = self.get_cpu_stats()
 
         total = int(total_2-total_1)
         idle = int(idle_2-idle_1)

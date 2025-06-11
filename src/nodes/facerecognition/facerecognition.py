@@ -31,32 +31,35 @@ class FaceRecognition(Node):
 
             # Detect faces and get aligned faces
             result = self.ai.detect_faces(frame)
-            faces = self.ai.get_aligned_faces_from_inference_result(result)
 
-            # Run batch predict on aligned faces, find identity, assign labels and scores to each detection
-            for face, face_embedding in zip(result.results, self.ai.get_face_embeddings(faces)):
-                identities, similarity_scores = self.db.identify_faces([face_embedding])
-                face["label"] = identities[0]  # Assign the first label
-                face["score"] = similarity_scores[0]  # Assign the first score
+            if len(result.results):
 
-            # Display frame
-            for face in result.results:
-                name = face["label"]
+                faces = self.ai.get_aligned_faces_from_inference_result(result)
 
-                if name != "":
-                    x1, y1, x2, y2 = map(int, face["bbox"])  # Convert bbox coordinates to integers
-                    frame = helpers.overlay_label(frame, name, (x1, y1), (255,255,255), (255,0,0))
+                # Run batch predict on aligned faces, find identity, assign labels and scores to each detection
+                for face, face_embedding in zip(result.results, self.ai.get_face_embeddings(faces)):
+                    identities, similarity_scores = self.db.identify_faces([face_embedding])
+                    face["label"] = identities[0]  # Assign the first label
+                    face["score"] = similarity_scores[0]  # Assign the first score
 
-                    # convert bbox to rectangle relative to frame center
-                    xoffset = x1-(Shared.screen_width/2)+((x2-x1)/2)
-                    yoffset = y1-(Shared.screen_height/2)+((y2-y1)/2)
-                    bbox=(x1, y1, x2, y2)
-                    offset=(int(xoffset), int(yoffset))
+                # Display frame
+                for face in result.results:
+                    name = face["label"]
 
-                    # get person score
-                    person_score = os.getenv(f"PERSON_SCORE_{name.upper()}")
-                    person_score = 5 if person_score is None else person_score
-                    self.node_event_channel.publish("person-detected", Person(name=name, match_score=float(face["score"]), bbox=bbox, offset=offset, person_score=person_score))
+                    if name != "":
+                        x1, y1, x2, y2 = map(int, face["bbox"])  # Convert bbox coordinates to integers
+                        frame = helpers.overlay_label(frame, name, (x1, y1), (255,255,255), (255,0,0))
+
+                        # convert bbox to rectangle relative to frame center
+                        xoffset = x1-(Shared.screen_width/2)+((x2-x1)/2)
+                        yoffset = y1-(Shared.screen_height/2)+((y2-y1)/2)
+                        bbox=(x1, y1, x2, y2)
+                        offset=(int(xoffset), int(yoffset))
+
+                        # get person score
+                        person_score = os.getenv(f"PERSON_SCORE_{name.upper()}")
+                        person_score = 5 if person_score is None else person_score
+                        self.node_event_channel.publish("person-detected", Person(name=name, match_score=float(face["score"]), bbox=bbox, offset=offset, person_score=person_score))
 
             self.node_event_channel.publish("display-node-frame", frame)
         
