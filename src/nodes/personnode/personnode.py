@@ -2,7 +2,7 @@ import os
 import random
 from threading import Thread, Event
 from datetime import timedelta
-from core import Node, MultiTimeSeriesFilter, Person, Shared
+from core import Node, TimeSeriesFilter, Person, Shared
 
 class PersonNode(Node):
     def __init__(self):
@@ -11,7 +11,7 @@ class PersonNode(Node):
     def start(self): 
         super().start()
         self.node_event_channel.subscribe("person-detected", self.detected)
-        self.filter = MultiTimeSeriesFilter(
+        self.filter = TimeSeriesFilter(
             threshold=int(os.getenv("PERSON_FILTER_THRESHOLD")), 
             timespan=timedelta(seconds=int(os.getenv("PERSON_FILTER_TIMESPAN"))), 
             ignorespan=timedelta(seconds=int(os.getenv("PERSON_FILTER_IGNORESPAN"))), 
