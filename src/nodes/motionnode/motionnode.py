@@ -31,28 +31,28 @@ class MotionNode(Node):
         yoffset = thing.offset[1]
         yratio = ((Shared.screen_height/2)-yoffset) / Shared.screen_height
 
-        if xratio < 0.2:
-            self.node_event_channel.publish("motor-rotate-right", Shared.SPEED_SLOW, 0.1)
+        if xratio < 0.25:
+            self.node_event_channel.publish("motor-rotate-right", Shared.SPEED_SLOW, 0.05)
             return
 
-        if xratio > 0.7:
-            self.node_event_channel.publish("motor-rotate-left", Shared.SPEED_SLOW, 0.1)
+        if xratio > 0.75:
+            self.node_event_channel.publish("motor-rotate-left", Shared.SPEED_SLOW, 0.05)
             return
 
         xPos = Shared.servo_x
         yPos = Shared.servo_y
 
-        if yratio < 0.5:
-            yPos = yPos - 2
+        if yratio < 0.45:
+            yPos = yPos - 1
 
-        if yratio > 0.6:
-            yPos = yPos + 2
+        if yratio > 0.55:
+            yPos = yPos + 1
 
-        if xratio < 0.4:
-            xPos = xPos - 2
+        if xratio < 0.45:
+            xPos = xPos - 1
 
-        if xratio > 0.5:
-            xPos = xPos + 2
+        if xratio > 0.55:
+            xPos = xPos + 1
 
         if xPos != Shared.servo_x or yPos != Shared.servo_y:
             self.node_event_channel.publish("servo-command", CameraCommand(action=CameraCommand.CAMERA_ABSOLUTE, pos=(xPos, yPos)))
