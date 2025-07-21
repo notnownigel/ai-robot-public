@@ -11,3 +11,4 @@ class SystemStatus:
     cpu_temp: float
     cpu_load: int
     battery_percent: int
+    llm_status: str

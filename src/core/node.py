@@ -47,11 +47,11 @@ class Node(object):
 
     def start(self):
         if self.running is False:
-            self.info("Starting Node...")
             self.running = True
+            self.info("Running...")
             
     def stop(self):
-        self.info("Stopping Node.")
-
         if self.running is True:
             self.running = False
+
+        self.info("Terminated.")

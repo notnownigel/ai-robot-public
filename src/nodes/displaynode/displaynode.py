@@ -12,7 +12,7 @@ webapp = Flask(__name__)
 frame_to_render = None
 frame_ready = Event()
 fps = 0.0
-current_status = SystemStatus(under_voltage=False, ipaddr="0.0.0.0", disk_space_used=0, disk_space_total=0, memory_used=0, memory_total=0, cpu_load=0, cpu_temp=0, battery_percent=100)
+current_status = SystemStatus(under_voltage=False, ipaddr="0.0.0.0", disk_space_used=0, disk_space_total=0, memory_used=0, memory_total=0, cpu_load=0, cpu_temp=0, battery_percent=100, llm_status='')
 
 @webapp.route("/<name>")
 def index(name):
@@ -37,7 +37,8 @@ def getstatus():
         "disk_space_total": current_status.disk_space_total,
         "memory_used": current_status.memory_used,
         "memory_total": current_status.memory_total,
-        "battery_percent": current_status.battery_percent
+        "battery_percent": current_status.battery_percent,
+        "llm_status": current_status.llm_status
     }
 
 @webapp.route('/nodes')

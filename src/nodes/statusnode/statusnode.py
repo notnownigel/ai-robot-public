@@ -10,11 +10,16 @@ class StatusNode(Node):
     def start(self): 
         super().start()
         self.battery_percent = 100
+        self.llm_status = ''
         self.node_event_channel.subscribe("ups-battery-percent", self.update_battery)
+        self.node_event_channel.subscribe("llm-status", self.update_llm_status)
         self.run_every(10, self.monitor_status)
     
     def update_battery(self, percent:int):
         self.battery_percent = percent
+
+    def update_llm_status(self, status:str):
+        self.llm_status = status
 
     def monitor_status(self):
         under_voltage = self.get_under_voltage_status()
@@ -38,7 +43,8 @@ class StatusNode(Node):
             memory_total = memory_total,
             cpu_temp = cpu_temp,
             cpu_load = cpu_load,
-            battery_percent = self.battery_percent
+            battery_percent = self.battery_percent,
+            llm_status = self.llm_status
         )
     
         self.node_event_channel.publish("system-status", status)

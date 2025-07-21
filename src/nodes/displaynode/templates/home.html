@@ -27,6 +27,9 @@
       <tr>
         <td id="status_battery_percentage"></td>
       </tr>
+      <tr>
+        <td id="status_llm_status"></td>
+      </tr>
     </tbody>
   </table>
   <script>
@@ -41,6 +44,7 @@
         $("#status_disk_usage").text("Disk Usage: " + data.disk_space_used + " / " + data.disk_space_total + "Mb")
         $("#status_memory_usage").text("Memory Usage: " + data.memory_used + " / " + data.memory_total + "Mb")
         $("#status_battery_percentage").text("Available UPS Battery: " + data.battery_percent + "%")
+        $("#status_llm_status").text("LLM Status: " + data.llm_status)
         setTimeout(fetchStatus, 1000);
       }
     });

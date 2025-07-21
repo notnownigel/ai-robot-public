@@ -10,3 +10,4 @@ from .statusnode.statusnode import StatusNode
 from .motionnode.motionnode import MotionNode
 from .motornode.motornode import MotorNode
 from .upsnode.upsnode import UPSNode
+from .llmnode.llmnode import LLMNode
