@@ -59,3 +59,16 @@ degirum sys-info
 ## Testing
 degirum_cli predict-video --inference-host-address @local --model-name yolov8n_relu6_coco--640x640_quant_hailort_hailo8_1 --model-zoo-url degirum/hailo
 i2cdetect -y 1
+
+## Ollama LLM
+### Download and verify install script
+curl -fsSL https://ollama.com/install.sh | sh
+
+### Enable service (auto-start on boot)
+sudo systemctl enable ollama
+
+### Verify installation
+ollama --version  # Should return v0.1.20+
+
+### Python Library
+pip install ollama

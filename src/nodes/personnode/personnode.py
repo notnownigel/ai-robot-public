@@ -1,5 +1,4 @@
 import os
-import random
 from threading import Thread, Event
 from datetime import timedelta
 from core import Node, TimeSeriesFilter, Person, Shared
@@ -42,19 +41,8 @@ class PersonNode(Node):
         self.filter.add(person.name, person)
         self.node_event_channel.publish("centre-thing", person)
 
-    def get_person_greeting(self, person: Person):
-        # TODO - This should come from LLM
-        greetings = os.getenv(f"PERSON_GREETING_{person.person_score}")
-        
-        if greetings is None:
-            return f"Hello {person.name}."
-        
-        greeting_list = greetings.split(':')
-        greeting = greeting_list[random.randint(0, len(greeting_list)-1)]        
-        return greeting.format(person.name)
-
     def newperson(self, person: Person):
         self.info(f"New Person: {person.name}")        
-        self.node_event_channel.publish("speech-node-speak", self.get_person_greeting(person))
+        self.node_event_channel.publish("llm-generate-greeting", person = person)
         
 
