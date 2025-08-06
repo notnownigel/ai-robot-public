@@ -16,7 +16,6 @@ class LLMNode(Node):
 
     def init(self):
         self.node_event_channel.publish("llm-status", status = "Starting LLM Node")
-        time.sleep(25)
 
         ver = self.check_version()
         

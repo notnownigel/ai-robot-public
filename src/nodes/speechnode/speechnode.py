@@ -37,7 +37,8 @@ class SpeechNode(Node):
                         pygame.event.poll()
                         time.sleep(1)
                   
-    def speak(self, phrase):
+    def speak(self, phrase: str):
+        phrase = phrase.strip('"')
         self.info(f"Speech says: {phrase}")
         self.messages.append(f"{phrase}")
         self.speak_event.set()

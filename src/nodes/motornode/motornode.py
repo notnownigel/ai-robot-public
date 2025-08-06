@@ -29,82 +29,93 @@ class MotorNode(I2CNode):
         self.node_event_channel.subscribe("motor-rotate-right", self.rotate_right)
     
     def forwards(self, speed: int, duration: float):
-        self.drive(MotorNode.WHEEL_LEFT_FRONT, MotorNode.DIRECTION_FORWARDS, speed)
-        self.drive(MotorNode.WHEEL_RIGHT_FRONT, MotorNode.DIRECTION_FORWARDS, speed)
-        self.drive(MotorNode.WHEEL_LEFT_BACK, MotorNode.DIRECTION_FORWARDS, speed)
-        self.drive(MotorNode.WHEEL_RIGHT_BACK, MotorNode.DIRECTION_FORWARDS, speed)
-        time.sleep(duration)
-        self.stop_drive()
+        if (self.running):
+            self.drive(MotorNode.WHEEL_LEFT_FRONT, MotorNode.DIRECTION_FORWARDS, speed)
+            self.drive(MotorNode.WHEEL_RIGHT_FRONT, MotorNode.DIRECTION_FORWARDS, speed)
+            self.drive(MotorNode.WHEEL_LEFT_BACK, MotorNode.DIRECTION_FORWARDS, speed)
+            self.drive(MotorNode.WHEEL_RIGHT_BACK, MotorNode.DIRECTION_FORWARDS, speed)
+            time.sleep(duration)
+            self.stop_drive()
 
     def backwards(self, speed: int, duration: float):
-        self.drive(MotorNode.WHEEL_LEFT_FRONT, MotorNode.DIRECTION_BACKWARDS, speed)
-        self.drive(MotorNode.WHEEL_RIGHT_FRONT, MotorNode.DIRECTION_BACKWARDS, speed)
-        self.drive(MotorNode.WHEEL_LEFT_BACK, MotorNode.DIRECTION_BACKWARDS, speed)
-        self.drive(MotorNode.WHEEL_RIGHT_BACK, MotorNode.DIRECTION_BACKWARDS, speed)
-        time.sleep(duration)
-        self.stop_drive()
+        if (self.running):
+            self.drive(MotorNode.WHEEL_LEFT_FRONT, MotorNode.DIRECTION_BACKWARDS, speed)
+            self.drive(MotorNode.WHEEL_RIGHT_FRONT, MotorNode.DIRECTION_BACKWARDS, speed)
+            self.drive(MotorNode.WHEEL_LEFT_BACK, MotorNode.DIRECTION_BACKWARDS, speed)
+            self.drive(MotorNode.WHEEL_RIGHT_BACK, MotorNode.DIRECTION_BACKWARDS, speed)
+            time.sleep(duration)
+            self.stop_drive()
 
     def pan_left(self, speed: int, duration: float):
-        self.drive(MotorNode.WHEEL_LEFT_FRONT, MotorNode.DIRECTION_BACKWARDS, speed)
-        self.drive(MotorNode.WHEEL_RIGHT_FRONT, MotorNode.DIRECTION_FORWARDS, speed)
-        self.drive(MotorNode.WHEEL_LEFT_BACK, MotorNode.DIRECTION_FORWARDS, speed)
-        self.drive(MotorNode.WHEEL_RIGHT_BACK, MotorNode.DIRECTION_BACKWARDS, speed)
-        time.sleep(duration)
-        self.stop_drive()
+        if (self.running):
+            self.drive(MotorNode.WHEEL_LEFT_FRONT, MotorNode.DIRECTION_BACKWARDS, speed)
+            self.drive(MotorNode.WHEEL_RIGHT_FRONT, MotorNode.DIRECTION_FORWARDS, speed)
+            self.drive(MotorNode.WHEEL_LEFT_BACK, MotorNode.DIRECTION_FORWARDS, speed)
+            self.drive(MotorNode.WHEEL_RIGHT_BACK, MotorNode.DIRECTION_BACKWARDS, speed)
+            time.sleep(duration)
+            self.stop_drive()
 
     def pan_right(self, speed: int, duration: float):
-        self.drive(MotorNode.WHEEL_LEFT_FRONT, MotorNode.DIRECTION_FORWARDS, speed)
-        self.drive(MotorNode.WHEEL_RIGHT_FRONT, MotorNode.DIRECTION_BACKWARDS, speed)
-        self.drive(MotorNode.WHEEL_LEFT_BACK, MotorNode.DIRECTION_BACKWARDS, speed)
-        self.drive(MotorNode.WHEEL_RIGHT_BACK, MotorNode.DIRECTION_FORWARDS, speed)
-        time.sleep(duration)
-        self.stop_drive()
+        if (self.running):
+            self.drive(MotorNode.WHEEL_LEFT_FRONT, MotorNode.DIRECTION_FORWARDS, speed)
+            self.drive(MotorNode.WHEEL_RIGHT_FRONT, MotorNode.DIRECTION_BACKWARDS, speed)
+            self.drive(MotorNode.WHEEL_LEFT_BACK, MotorNode.DIRECTION_BACKWARDS, speed)
+            self.drive(MotorNode.WHEEL_RIGHT_BACK, MotorNode.DIRECTION_FORWARDS, speed)
+            time.sleep(duration)
+            self.stop_drive()
 
     def translate_forward_left(self, speed: int, duration: float):
-        self.drive(MotorNode.WHEEL_RIGHT_FRONT, MotorNode.DIRECTION_FORWARDS, speed)
-        self.drive(MotorNode.WHEEL_LEFT_BACK, MotorNode.DIRECTION_FORWARDS, speed)
-        time.sleep(duration)
-        self.stop_drive()
+        if (self.running):
+            self.drive(MotorNode.WHEEL_RIGHT_FRONT, MotorNode.DIRECTION_FORWARDS, speed)
+            self.drive(MotorNode.WHEEL_LEFT_BACK, MotorNode.DIRECTION_FORWARDS, speed)
+            time.sleep(duration)
+            self.stop_drive()
 
     def translate_forward_right(self, speed: int, duration: float):
-        self.drive(MotorNode.WHEEL_LEFT_FRONT, MotorNode.DIRECTION_FORWARDS, speed)
-        self.drive(MotorNode.WHEEL_RIGHT_BACK, MotorNode.DIRECTION_FORWARDS, speed)
-        time.sleep(duration)
-        self.stop_drive()
+        if (self.running):
+            self.drive(MotorNode.WHEEL_LEFT_FRONT, MotorNode.DIRECTION_FORWARDS, speed)
+            self.drive(MotorNode.WHEEL_RIGHT_BACK, MotorNode.DIRECTION_FORWARDS, speed)
+            time.sleep(duration)
+            self.stop_drive()
 
     def translate_back_left(self, speed: int, duration: float):
-        self.drive(MotorNode.WHEEL_LEFT_FRONT, MotorNode.DIRECTION_BACKWARDS, speed)
-        self.drive(MotorNode.WHEEL_RIGHT_BACK, MotorNode.DIRECTION_BACKWARDS, speed)
-        time.sleep(duration)
-        self.stop_drive()
+        if (self.running):
+            self.drive(MotorNode.WHEEL_LEFT_FRONT, MotorNode.DIRECTION_BACKWARDS, speed)
+            self.drive(MotorNode.WHEEL_RIGHT_BACK, MotorNode.DIRECTION_BACKWARDS, speed)
+            time.sleep(duration)
+            self.stop_drive()
 
     def translate_back_right(self, speed: int, duration: float):
-        self.drive(MotorNode.WHEEL_RIGHT_FRONT, MotorNode.DIRECTION_BACKWARDS, speed)
-        self.drive(MotorNode.WHEEL_LEFT_BACK, MotorNode.DIRECTION_BACKWARDS, speed)
-        time.sleep(duration)
-        self.stop_drive()
+        if (self.running):
+            self.drive(MotorNode.WHEEL_RIGHT_FRONT, MotorNode.DIRECTION_BACKWARDS, speed)
+            self.drive(MotorNode.WHEEL_LEFT_BACK, MotorNode.DIRECTION_BACKWARDS, speed)
+            time.sleep(duration)
+            self.stop_drive()
 
     def rotate_left(self, speed: int, duration: float):
-        self.drive(MotorNode.WHEEL_LEFT_FRONT, MotorNode.DIRECTION_BACKWARDS, speed)
-        self.drive(MotorNode.WHEEL_RIGHT_FRONT, MotorNode.DIRECTION_FORWARDS, speed)
-        self.drive(MotorNode.WHEEL_LEFT_BACK, MotorNode.DIRECTION_BACKWARDS, speed)
-        self.drive(MotorNode.WHEEL_RIGHT_BACK, MotorNode.DIRECTION_FORWARDS, speed)
-        time.sleep(duration)
-        self.stop_drive()
+        if (self.running):
+            self.drive(MotorNode.WHEEL_LEFT_FRONT, MotorNode.DIRECTION_BACKWARDS, speed)
+            self.drive(MotorNode.WHEEL_RIGHT_FRONT, MotorNode.DIRECTION_FORWARDS, speed)
+            self.drive(MotorNode.WHEEL_LEFT_BACK, MotorNode.DIRECTION_BACKWARDS, speed)
+            self.drive(MotorNode.WHEEL_RIGHT_BACK, MotorNode.DIRECTION_FORWARDS, speed)
+            time.sleep(duration)
+            self.stop_drive()
 
     def rotate_right(self, speed: int, duration: float):
-        self.drive(MotorNode.WHEEL_LEFT_FRONT, MotorNode.DIRECTION_FORWARDS, speed)
-        self.drive(MotorNode.WHEEL_RIGHT_FRONT, MotorNode.DIRECTION_BACKWARDS, speed)
-        self.drive(MotorNode.WHEEL_LEFT_BACK, MotorNode.DIRECTION_FORWARDS, speed)
-        self.drive(MotorNode.WHEEL_RIGHT_BACK, MotorNode.DIRECTION_BACKWARDS, speed)
-        time.sleep(duration)
-        self.stop_drive()
+        if (self.running):
+            self.drive(MotorNode.WHEEL_LEFT_FRONT, MotorNode.DIRECTION_FORWARDS, speed)
+            self.drive(MotorNode.WHEEL_RIGHT_FRONT, MotorNode.DIRECTION_BACKWARDS, speed)
+            self.drive(MotorNode.WHEEL_LEFT_BACK, MotorNode.DIRECTION_FORWARDS, speed)
+            self.drive(MotorNode.WHEEL_RIGHT_BACK, MotorNode.DIRECTION_BACKWARDS, speed)
+            time.sleep(duration)
+            self.stop_drive()
 
     def stop_drive(self):
-        self.drive(MotorNode.WHEEL_LEFT_FRONT, MotorNode.DIRECTION_FORWARDS, Shared.SPEED_STOP)
-        self.drive(MotorNode.WHEEL_RIGHT_FRONT, MotorNode.DIRECTION_FORWARDS, Shared.SPEED_STOP)
-        self.drive(MotorNode.WHEEL_LEFT_BACK, MotorNode.DIRECTION_FORWARDS, Shared.SPEED_STOP)
-        self.drive(MotorNode.WHEEL_RIGHT_BACK, MotorNode.DIRECTION_FORWARDS, Shared.SPEED_STOP)
+        if (self.running):
+            self.drive(MotorNode.WHEEL_LEFT_FRONT, MotorNode.DIRECTION_FORWARDS, Shared.SPEED_STOP)
+            self.drive(MotorNode.WHEEL_RIGHT_FRONT, MotorNode.DIRECTION_FORWARDS, Shared.SPEED_STOP)
+            self.drive(MotorNode.WHEEL_LEFT_BACK, MotorNode.DIRECTION_FORWARDS, Shared.SPEED_STOP)
+            self.drive(MotorNode.WHEEL_RIGHT_BACK, MotorNode.DIRECTION_FORWARDS, Shared.SPEED_STOP)
 
     def drive(self, motor: int, direction: int, speed: int):
         self.write_array(I2CNode.RASPBOT_MOTOR, [motor, direction, speed])

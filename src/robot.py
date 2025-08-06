@@ -9,14 +9,14 @@ dotenv.load_dotenv()
 Ubermensch(
     UPSNode(),
     StatusNode(),
-    FaceRecognition("./faces.db"),
-    PersonNode(),
-    SpeechNode(),
-    MotionNode(),
     OledNode(),
     ServoNode(),
     MotorNode(),
     BuzzerNode(),
     LLMNode(),
+    SpeechNode(),
+    FaceRecognition("./faces.db"),
+    PersonNode(),
+    MotionNode(),
     DisplayNode()
 )
