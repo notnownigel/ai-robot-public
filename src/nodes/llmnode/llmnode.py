@@ -1,6 +1,5 @@
 import os
 import subprocess
-import time
 import random
 import ollama
 from threading import Thread
