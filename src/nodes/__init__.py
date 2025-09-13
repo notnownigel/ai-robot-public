@@ -3,6 +3,8 @@ from .buzzernode.buzzernode import BuzzerNode
 from .servonode.servonode import ServoNode
 from .olednode.olednode import OledNode
 from .facerecognition.facerecognition import FaceRecognition
+from .facerecognition.facestorage import FaceStorage
+from .facerecognition.hailoface import FaceAI
 from .displaynode.displaynode import DisplayNode
 from .personnode.personnode import PersonNode
 from .speechnode.speechnode import SpeechNode

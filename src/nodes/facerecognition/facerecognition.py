@@ -11,13 +11,6 @@ class FaceRecognition(Node):
         super().__init__(name=__name__)
         self.dbpath = dbpath
 
-    def generate_db(self, assets):
-        self.db.populate_database_from_images(
-            input_path = assets,
-            face_det_model = self.ai.face_det_model,
-            face_rec_model = self.ai.face_rec_model
-        )
-
     def start(self): 
         super().start()
         self.camera = CameraStream("camera")
@@ -44,7 +37,7 @@ class FaceRecognition(Node):
 
                 # Display frame
                 for face in result.results:
-                    name = face["label"]
+                    name = str(face["label"])
 
                     if name != "":
                         x1, y1, x2, y2 = map(int, face["bbox"])  # Convert bbox coordinates to integers
@@ -55,11 +48,7 @@ class FaceRecognition(Node):
                         yoffset = y1-(Shared.screen_height/2)+((y2-y1)/2)
                         bbox=(x1, y1, x2, y2)
                         offset=(int(xoffset), int(yoffset))
-
-                        # get person score
-                        person_score = os.getenv(f"PERSON_SCORE_{name.upper()}")
-                        person_score = 5 if person_score is None else person_score
-                        self.node_event_channel.publish("person-detected", Person(name=name, match_score=float(face["score"]), bbox=bbox, offset=offset, person_score=person_score))
+                        self.node_event_channel.publish("person-detected", Person(name=name.split(".")[0], match_score=float(face["score"]), bbox=bbox, offset=offset, person_score=name.split(".")[1]))
 
             self.node_event_channel.publish("display-node-frame", frame)
         
